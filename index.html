@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA para Contadores — Contrata tu Auxiliar Contable Inteligente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101A2E;
+    --ink-2:#182541;
+    --ink-3:#212F4E;
+    --paper:#EEF0E6;
+    --paper-2:#E2E5D6;
+    --paper-3:#D9DCC9;
+    --sello:#1F7A4D;
+    --sello-light:#2E9861;
+    --folio:#C9962B;
+    --folio-light:#E0B04E;
+    --rojo:#B4432F;
+    --text-ink:#161F32;
+    --text-muted:#5B6472;
+    --text-on-dark:#EDEFE6;
+    --text-on-dark-muted:#9BA6C0;
+    --border-dark:rgba(237,239,230,0.14);
+    --border-light:rgba(22,31,50,0.12);
+    --radius:14px;
+    --shadow: 0 20px 50px -20px rgba(16,26,46,0.35);
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--text-ink);
+    font-family:'Inter',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;max-width:100%;}
+  a{color:inherit;text-decoration:none;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 28px;}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:700;line-height:1.08;margin:0;color:inherit;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  ::selection{background:var(--sello);color:#fff;}
+  :focus-visible{outline:2px solid var(--folio);outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;scroll-behavior:auto !important;}
+  }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;font-size:14.5px;letter-spacing:0.02em;
+    padding:15px 26px;border-radius:9px;
+    border:1px solid transparent;cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--sello);color:#fff;box-shadow:0 14px 30px -12px rgba(31,122,77,0.55);}
+  .btn-primary:hover{background:var(--sello-light);}
+  .btn-ghost{background:transparent;color:var(--text-on-dark);border-color:var(--border-dark);}
+  .btn-ghost:hover{border-color:var(--folio-light);color:var(--folio-light);}
+  .btn-block{width:100%;justify-content:center;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(16,26,46,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border-dark);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;}
+  .brand{display:flex;align-items:center;gap:9px;color:var(--text-on-dark);font-family:'Fraunces',serif;font-weight:700;font-size:19px;}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--sello-light);}
+  .nav-links{display:flex;align-items:center;gap:28px;}
+  .nav-links a{font-size:14px;color:var(--text-on-dark-muted);font-weight:500;transition:color .15s;}
+  .nav-links a:hover{color:var(--text-on-dark);}
+  .nav-cta{display:flex;align-items:center;gap:18px;}
+  @media (max-width:760px){ .nav-links{display:none;} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:
+      radial-gradient(1100px 480px at 82% -10%, rgba(31,122,77,0.28), transparent 60%),
+      radial-gradient(700px 400px at 10% 110%, rgba(201,150,43,0.18), transparent 60%),
+      var(--ink);
+    color:var(--text-on-dark);
+    padding:76px 0 90px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;grid-template-columns:1.05fr 0.95fr;gap:56px;align-items:center;
+  }
+  @media (max-width:940px){ .hero-grid{grid-template-columns:1fr;gap:48px;} }
+
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid var(--border-dark);
+    padding:7px 14px 7px 10px;border-radius:100px;
+    color:var(--sello-light);margin-bottom:26px;
+  }
+  .hero-badge .pulse{width:7px;height:7px;border-radius:50%;background:var(--sello-light);
+    box-shadow:0 0 0 0 rgba(46,152,97,0.7); animation:pulse 2s infinite;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(46,152,97,0.55);}
+    70%{box-shadow:0 0 0 8px rgba(46,152,97,0);}
+    100%{box-shadow:0 0 0 0 rgba(46,152,97,0);}
+  }
+  .hero h1{font-size:clamp(34px,4.4vw,54px);color:#fff;letter-spacing:-0.01em;}
+  .hero h1 em{font-style:italic;color:var(--sello-light);}
+  .hero p.lead{font-size:18px;color:var(--text-on-dark-muted);max-width:520px;margin:22px 0 30px;}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:34px;}
+  .hero-meta{
+    display:grid;grid-template-columns:repeat(3,auto);gap:22px 30px;
+    padding-top:26px;border-top:1px solid var(--border-dark);
+  }
+  @media (max-width:520px){ .hero-meta{grid-template-columns:1fr;} }
+  .hero-meta .item{display:flex;align-items:center;gap:10px;}
+  .hero-meta .icon{width:34px;height:34px;border-radius:9px;background:rgba(255,255,255,0.06);
+    display:flex;align-items:center;justify-content:center;flex:none;}
+  .hero-meta .icon svg{width:16px;height:16px;stroke:var(--folio-light);}
+  .hero-meta .label{font-size:11px;color:var(--text-on-dark-muted);text-transform:uppercase;letter-spacing:.08em;font-family:'IBM Plex Mono',monospace;}
+  .hero-meta .value{font-size:14.5px;font-weight:600;color:#fff;}
+
+  /* ---------- signature: ledger chat mock ---------- */
+  .ledger{
+    background:linear-gradient(180deg,#0D1526,#0A0F1D);
+    border:1px solid var(--border-dark);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .ledger-top{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;border-bottom:1px dashed rgba(237,239,230,0.16);
+  }
+  .ledger-top .folio-id{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--text-on-dark-muted);letter-spacing:.05em;}
+  .ledger-top .stamp{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:.08em;
+    color:var(--sello-light);border:1px solid rgba(46,152,97,0.45);border-radius:100px;padding:4px 10px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .ledger-top .stamp::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--sello-light);}
+  .ledger-body{padding:22px 20px 24px;min-height:340px;display:flex;flex-direction:column;gap:12px;}
+  .msg{
+    max-width:88%;padding:11px 14px;border-radius:10px;font-family:'IBM Plex Mono',monospace;
+    font-size:13.5px;line-height:1.5;opacity:0;transform:translateY(6px);
+    animation:rise .4s ease forwards;
+  }
+  @keyframes rise{ to{opacity:1;transform:translateY(0);} }
+  .msg.you{align-self:flex-end;background:var(--folio);color:#1A1305;border-bottom-right-radius:3px;}
+  .msg.ai{align-self:flex-start;background:rgba(255,255,255,0.07);color:var(--text-on-dark);border:1px solid var(--border-dark);border-bottom-left-radius:3px;}
+  .msg.ai .check{color:var(--sello-light);margin-right:6px;}
+  .ledger-caret{align-self:flex-start;display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-on-dark-muted);}
+  .caret-blink{width:7px;height:14px;background:var(--sello-light);animation:blink 1s step-end infinite;}
+  @keyframes blink{ 50%{opacity:0;} }
+  .ledger-foot{
+    padding:14px 20px;border-top:1px solid var(--border-dark);
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-on-dark-muted);
+  }
+
+  /* ---------- section shells ---------- */
+  section{padding:96px 0;}
+  .on-paper{background:var(--paper);}
+  .on-paper-2{background:var(--paper-2);}
+  .on-ink{background:var(--ink);color:var(--text-on-dark);}
+  .section-head{max-width:640px;margin-bottom:52px;}
+  .section-head.center{margin-left:auto;margin-right:auto;text-align:center;}
+  .section-head .eyebrow{color:var(--sello);}
+  .on-ink .section-head .eyebrow{color:var(--sello-light);}
+  .section-head h2{font-size:clamp(28px,3.2vw,40px);margin-top:12px;letter-spacing:-0.01em;}
+  .section-head p{color:var(--text-muted);font-size:16.5px;margin-top:14px;}
+  .on-ink .section-head p{color:var(--text-on-dark-muted);}
+
+  /* ---------- pain checklist ---------- */
+  .pain-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--border-light);}
+  .pain-list li{
+    display:flex;align-items:flex-start;gap:16px;
+    padding:20px 4px;border-bottom:1px solid var(--border-light);
+    font-size:17px;color:var(--text-ink);
+  }
+  .pain-list .mark{
+    flex:none;width:26px;height:26px;border-radius:7px;
+    background:rgba(180,67,47,0.1);color:var(--rojo);
+    display:flex;align-items:center;justify-content:center;margin-top:2px;
+  }
+  .pain-list .mark svg{width:13px;height:13px;stroke:var(--rojo);stroke-width:3;}
+  .pain-punch{
+    margin-top:40px;padding:26px 28px;border-radius:var(--radius);
+    background:var(--ink);color:var(--text-on-dark);
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    box-shadow:var(--shadow);
+  }
+  .pain-punch strong{color:var(--sello-light);font-family:'Fraunces',serif;font-weight:600;font-size:19px;}
+  .pain-punch span{color:var(--text-on-dark-muted);font-size:15px;}
+
+  /* ---------- imagine / terminal ---------- */
+  .imagine-wrap{display:grid;grid-template-columns:0.9fr 1.1fr;gap:56px;align-items:center;}
+  @media (max-width:940px){ .imagine-wrap{grid-template-columns:1fr;} }
+  .imagine-copy h2{font-size:clamp(26px,3vw,36px);color:#fff;}
+  .imagine-copy p{color:var(--text-on-dark-muted);font-size:17px;margin-top:16px;}
+  .imagine-copy .signoff{margin-top:26px;font-family:'Fraunces',serif;font-style:italic;font-size:19px;color:var(--folio-light);}
+  .term{
+    background:#080C16;border:1px solid var(--border-dark);border-radius:14px;overflow:hidden;
+  }
+  .term-bar{display:flex;gap:7px;padding:12px 16px;border-bottom:1px solid var(--border-dark);}
+  .term-bar span{width:10px;height:10px;border-radius:50%;background:rgba(237,239,230,0.16);}
+  .term-body{padding:22px 22px 26px;font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:var(--text-on-dark-muted);}
+  .term-line{margin-bottom:14px;}
+  .term-line .prompt-mark{color:var(--sello-light);}
+  .term-line .txt{color:#fff;}
+  .term-line .reply{display:block;margin:6px 0 0 18px;color:var(--text-on-dark-muted);}
+  .term-line .reply .check{color:var(--sello-light);margin-right:6px;}
+
+  /* ---------- learn grid ---------- */
+  .learn-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  @media (max-width:700px){ .learn-grid{grid-template-columns:1fr;} }
+  .learn-item{
+    display:flex;align-items:flex-start;gap:14px;
+    padding:18px 20px;background:#fff;border:1px solid var(--border-light);border-radius:11px;
+    transition:border-color .15s, transform .15s;
+  }
+  .learn-item:hover{border-color:var(--sello);transform:translateY(-2px);}
+  .learn-item .mark{
+    flex:none;width:26px;height:26px;border-radius:7px;background:rgba(31,122,77,0.1);
+    display:flex;align-items:center;justify-content:center;margin-top:1px;
+  }
+  .learn-item .mark svg{width:14px;height:14px;stroke:var(--sello);stroke-width:3;}
+  .learn-item p{margin:0;font-size:15.5px;font-weight:500;}
+
+  /* ---------- cases / file tabs ---------- */
+  .cases-row{display:flex;flex-wrap:wrap;gap:12px;}
+  .case-tab{
+    font-family:'IBM Plex Mono',monospace;font-size:13.5px;font-weight:600;letter-spacing:.02em;
+    padding:11px 18px;border-radius:8px 8px 3px 3px;
+    background:#fff;border:1px solid var(--border-light);border-bottom:3px solid var(--folio);
+    color:var(--text-ink);
+  }
+
+  /* ---------- includes ---------- */
+  .includes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media (max-width:900px){ .includes-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:600px){ .includes-grid{grid-template-columns:1fr;} }
+  .inc-card{
+    background:rgba(255,255,255,0.04);border:1px solid var(--border-dark);
+    border-radius:13px;padding:26px 22px;
+  }
+  .inc-card .n{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--folio-light);letter-spacing:.08em;}
+  .inc-card h3{font-size:18.5px;color:#fff;margin-top:10px;font-weight:600;}
+  .inc-card p{font-size:14px;color:var(--text-on-dark-muted);margin-top:8px;}
+
+  /* ---------- fit ---------- */
+  .fit-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:760px){ .fit-grid{grid-template-columns:1fr;} }
+  .fit-card{border-radius:var(--radius);padding:30px 28px;}
+  .fit-card.yes{background:#fff;border:1px solid var(--border-light);}
+  .fit-card.no{background:var(--paper-3);border:1px solid var(--border-light);}
+  .fit-card h3{font-size:17px;margin-bottom:18px;font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;text-transform:uppercase;}
+  .fit-card.yes h3{color:var(--sello);}
+  .fit-card.no h3{color:var(--text-muted);}
+  .fit-card ul{list-style:none;margin:0;padding:0;}
+  .fit-card li{display:flex;gap:11px;padding:9px 0;font-size:15px;}
+  .fit-card.yes li::before{content:"✓";color:var(--sello);font-weight:700;}
+  .fit-card.no li::before{content:"–";color:var(--text-muted);font-weight:700;}
+  .fit-note{margin-top:18px;font-size:14px;color:var(--text-muted);font-style:italic;}
+
+  /* ---------- instructor ---------- */
+  .instructor-card{
+    display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:center;
+    background:#fff;border:1px solid var(--border-light);border-radius:18px;padding:38px;
+  }
+  @media (max-width:640px){ .instructor-card{grid-template-columns:1fr;text-align:center;} }
+  .avatar{
+    width:120px;height:120px;border-radius:50%;
+    background:linear-gradient(150deg,var(--ink),var(--ink-3));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:700;font-size:38px;color:var(--sello-light);
+    border:3px solid var(--folio);
+  }
+  @media (max-width:640px){ .avatar{margin:0 auto;} }
+  .instructor-card h3{font-size:23px;}
+  .instructor-card .role{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--sello);letter-spacing:.06em;text-transform:uppercase;margin:8px 0 14px;}
+  .instructor-card p{color:var(--text-muted);font-size:15.5px;}
+
+  /* ---------- faq ---------- */
+  .faq-item{border-bottom:1px solid var(--border-light);}
+  .faq-q{
+    width:100%;text-align:left;background:none;border:none;cursor:pointer;
+    padding:22px 4px;display:flex;align-items:center;justify-content:space-between;gap:20px;
+    font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--text-ink);
+  }
+  .faq-q .plus{flex:none;width:22px;height:22px;position:relative;}
+  .faq-q .plus::before,.faq-q .plus::after{content:"";position:absolute;background:var(--sello);border-radius:2px;transition:transform .25s ease;}
+  .faq-q .plus::before{width:100%;height:2px;top:50%;left:0;transform:translateY(-50%);}
+  .faq-q .plus::after{width:2px;height:100%;left:50%;top:0;transform:translateX(-50%);}
+  .faq-item.open .plus::after{transform:translateX(-50%) rotate(90deg);opacity:0;}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .faq-a p{padding:0 4px 22px;color:var(--text-muted);font-size:15.5px;max-width:620px;}
+
+  /* ---------- pricing / factura ---------- */
+  .factura{
+    max-width:520px;margin:0 auto;background:#0D1526;border:1px solid var(--border-dark);
+    border-radius:18px;overflow:hidden;box-shadow:var(--shadow);
+  }
+  .factura-head{padding:26px 30px;border-bottom:1px dashed rgba(237,239,230,0.18);display:flex;justify-content:space-between;align-items:flex-start;}
+  .factura-head .fid{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-on-dark-muted);}
+  .factura-head .badge{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;
+    background:rgba(201,150,43,0.14);color:var(--folio-light);border:1px solid rgba(201,150,43,0.4);
+    border-radius:100px;padding:5px 12px;
+  }
+  .factura-title{padding:22px 30px 6px;}
+  .factura-title h3{color:#fff;font-size:24px;}
+  .factura-items{padding:10px 30px 20px;}
+  .factura-items .row{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--border-dark);font-size:14.5px;color:var(--text-on-dark-muted);}
+  .factura-items .row span:first-child{color:var(--text-on-dark);display:flex;align-items:center;gap:9px;}
+  .factura-items .row span:first-child::before{content:"✓";color:var(--sello-light);font-weight:700;}
+  .factura-total{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:22px 30px;background:rgba(31,122,77,0.1);border-top:1px solid var(--border-dark);
+  }
+  .factura-total .lbl{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-on-dark-muted);letter-spacing:.06em;text-transform:uppercase;}
+  .factura-total .amt{font-family:'Fraunces',serif;font-weight:700;font-size:34px;color:#fff;}
+  .factura-total .amt sup{font-size:15px;font-weight:600;color:var(--folio-light);margin-left:4px;}
+  .factura-cta{padding:8px 30px 30px;}
+  .factura-note{text-align:center;font-size:12.5px;color:var(--text-on-dark-muted);margin-top:14px;}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--ink);color:var(--text-on-dark-muted);padding:50px 0 34px;border-top:1px solid var(--border-dark);}
+  .foot-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+  .foot-signoff{font-family:'Fraunces',serif;font-style:italic;font-size:19px;color:#fff;}
+  .foot-links{display:flex;gap:22px;font-size:13.5px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="dot"></span> FiscaLab</div>
+    <nav class="nav-links">
+      <a href="#aprenderas">Qué aprenderás</a>
+      <a href="#incluye">Qué incluye</a>
+      <a href="#instructor">Instructor</a>
+      <a href="#faq">Preguntas</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#inscripcion" class="btn btn-primary">Inscríbete</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="hero-badge"><span class="pulse"></span> Curso en vivo por Zoom · Cupo limitado</div>
+      <h1>Contrata un <em>Auxiliar Contable Inteligente</em> que trabaje para ti 24/7</h1>
+      <p class="lead">Deja de perder horas redactando correos, elaborando pólizas, analizando CFDI o preparando escritos para el SAT. Aprende a usar IA para automatizar tu trabajo contable con casos reales de México.</p>
+      <div class="hero-actions">
+        <a href="#inscripcion" class="btn btn-primary">Inscríbete hoy — $797 MXN</a>
+        <a href="#aprenderas" class="btn btn-ghost">Ver el temario ↓</a>
+      </div>
+      <div class="hero-meta">
+        <div class="item">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
+          <div><div class="label">Fecha</div><div class="value">31 de julio, 2026</div></div>
+        </div>
+        <div class="item">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+          <div><div class="label">Horario</div><div class="value">6:00–10:00 pm CDMX</div></div>
+        </div>
+        <div class="item">
+          <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M15 10l5-3v10l-5-3"/><rect x="2" y="6" width="13" height="12" rx="2"/></svg></span>
+          <div><div class="label">Modalidad</div><div class="value">Zoom + grabación</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ledger">
+      <div class="ledger-top">
+        <span class="folio-id">FOLIO 2026-0731 · AUXILIAR CONTABLE IA</span>
+        <span class="stamp">en vivo</span>
+      </div>
+      <div class="ledger-body" id="ledgerBody"></div>
+      <div class="ledger-foot">
+        <span>chat.auxiliar-contable</span>
+        <span>respuesta ≈ 4 seg</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="on-paper">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">¿Te sientes identificado?</div>
+      <h2>Probablemente más de una vez te ha pasado esto...</h2>
+    </div>
+    <ul class="pain-list">
+      <li><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span> Pasas horas redactando correos para clientes.</li>
+      <li><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span> Inviertes demasiado tiempo revisando CFDI y estados de cuenta.</li>
+      <li><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span> Redactar un escrito para el SAT puede quitarte toda una mañana.</li>
+      <li><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span> Cada cliente vuelve a hacer las mismas preguntas.</li>
+      <li><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span> Terminas trabajando hasta tarde porque el trabajo operativo nunca termina.</li>
+    </ul>
+    <div class="pain-punch">
+      <strong>Hoy puedes trabajar acompañado por un Auxiliar Contable Inteligente, 24 horas al día.</strong>
+      <span>No reemplaza tu criterio profesional — lo potencia.</span>
+    </div>
+  </div>
+</section>
+
+<section class="on-ink">
+  <div class="wrap imagine-wrap">
+    <div class="imagine-copy">
+      <div class="eyebrow">El próximo lunes</div>
+      <h2>Imagina llegar a la oficina y poder decir...</h2>
+      <p>Y recibir una respuesta útil, aplicada a tu caso, en segundos — no en horas. Eso es exactamente lo que construimos juntos en este curso.</p>
+      <p class="signoff">Eso es exactamente lo que aprenderás.</p>
+    </div>
+    <div class="term">
+      <div class="term-bar"><span></span><span></span><span></span></div>
+      <div class="term-body">
+        <div class="term-line"><span class="prompt-mark">›</span> <span class="txt">"Analiza estos CFDI."</span><span class="reply"><span class="check">✓</span>13 facturas clasificadas y listas para póliza</span></div>
+        <div class="term-line"><span class="prompt-mark">›</span> <span class="txt">"Elabora la póliza contable."</span><span class="reply"><span class="check">✓</span>Asiento propuesto en formato tabla</span></div>
+        <div class="term-line"><span class="prompt-mark">›</span> <span class="txt">"Redacta este correo para mi cliente."</span><span class="reply"><span class="check">✓</span>Correo claro, listo para enviar</span></div>
+        <div class="term-line"><span class="prompt-mark">›</span> <span class="txt">"Explícame este artículo del CFF."</span><span class="reply"><span class="check">✓</span>Explicación aplicada a tu caso</span></div>
+        <div class="term-line"><span class="prompt-mark">›</span> <span class="txt">"Prepara un borrador para el SAT."</span><span class="reply"><span class="check">✓</span>Escrito con fundamento legal</span></div>
+        <div class="term-line" style="margin-bottom:0;"><span class="prompt-mark">›</span> <span class="txt">"Resume este contrato de 40 páginas."</span><span class="reply"><span class="check">✓</span>Resumen con cláusulas de riesgo</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="on-paper" id="aprenderas">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">¿Qué aprenderás?</div>
+      <h2>En cuatro horas, construimos tu Auxiliar Contable Inteligente</h2>
+      <p>Paso a paso, con ejercicios prácticos — no una demo, un flujo de trabajo que te llevas contigo.</p>
+    </div>
+    <div class="learn-grid">
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Elaborar pólizas contables</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Analizar CFDI</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Revisar estados de cuenta</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Redactar escritos para el SAT</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Contestar requerimientos</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Redactar correos profesionales</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Analizar contratos</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Interpretar documentos financieros</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Resumir información compleja</p></div>
+      <div class="learn-item"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><p>Crear prompts profesionales reutilizables</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="on-paper-2">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Todo basado en casos reales</div>
+      <h2>No aprenderás teoría — trabajamos con lo que vive un contador mexicano cada día</h2>
+    </div>
+    <div class="cases-row">
+      <span class="case-tab">CFDI</span>
+      <span class="case-tab">IVA</span>
+      <span class="case-tab">SAT</span>
+      <span class="case-tab">Correos</span>
+      <span class="case-tab">Estados de cuenta</span>
+      <span class="case-tab">Pólizas</span>
+      <span class="case-tab">Clientes</span>
+      <span class="case-tab">Documentos financieros</span>
+    </div>
+  </div>
+</section>
+
+<section class="on-ink" id="incluye">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Lo que recibirás</div>
+      <h2>Todo lo necesario para seguir usándolo después del curso</h2>
+    </div>
+    <div class="includes-grid">
+      <div class="inc-card"><div class="n">01</div><h3>Curso en vivo por Zoom</h3><p>4 horas completamente prácticas.</p></div>
+      <div class="inc-card"><div class="n">02</div><h3>Acceso a la grabación</h3><p>Podrás volver a verlo cuando quieras.</p></div>
+      <div class="inc-card"><div class="n">03</div><h3>Plantilla para crear prompts</h3><p>Nunca volverás a empezar desde cero.</p></div>
+      <div class="inc-card"><div class="n">04</div><h3>Hoja de Prompts Maestros</h3><p>Los mejores prompts listos para copiar y usar.</p></div>
+      <div class="inc-card"><div class="n">05</div><h3>Grupo privado de WhatsApp</h3><p>Seguimiento y resolución de dudas después del curso.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="on-paper">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">¿Es para ti?</div>
+      <h2>Este curso está pensado para contadores en ejercicio</h2>
+    </div>
+    <div class="fit-grid">
+      <div class="fit-card yes">
+        <h3>Este curso es para ti si...</h3>
+        <ul>
+          <li>Eres Contador Público</li>
+          <li>Trabajas en un despacho</li>
+          <li>Eres Auditor</li>
+          <li>Eres Fiscalista</li>
+          <li>Trabajas en Finanzas</li>
+          <li>Eres Controller</li>
+          <li>Estás estudiando Contaduría</li>
+        </ul>
+      </div>
+      <div class="fit-card no">
+        <h3>No necesitas...</h3>
+        <ul>
+          <li>Saber programar</li>
+          <li>Tener conocimientos previos de IA</li>
+          <li>Comprar software caro</li>
+        </ul>
+        <p class="fit-note">Aprenderemos desde cero.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="on-paper-2" id="instructor">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">¿Quién será tu instructor?</div>
+      <h2>Alguien que ya lo aplica todos los días</h2>
+    </div>
+    <div class="instructor-card">
+      <div class="avatar">JC</div>
+      <div>
+        <h3>Joaquín Calva Pérez</h3>
+        <div class="role">Fundador · FiscaLab</div>
+        <p>Contador Público con más de 12 años de experiencia en contabilidad, auditoría, finanzas y cumplimiento fiscal. Especialista en la aplicación práctica de Inteligencia Artificial para automatizar procesos contables y financieros.</p>
+        <p style="margin-top:10px;">Su misión: que los contadores mexicanos usen la IA para ahorrar tiempo, mejorar la calidad de su trabajo y ofrecer más valor a sus clientes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="on-paper" id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Preguntas frecuentes</div>
+      <h2>Antes de inscribirte</h2>
+    </div>
+    <div class="faq-list" style="max-width:760px;border-top:1px solid var(--border-light);">
+      <div class="faq-item">
+        <button class="faq-q">¿Necesito ChatGPT Plus?<span class="plus"></span></button>
+        <div class="faq-a"><p>No. Durante el curso explicaré qué versión conviene utilizar y cómo aprovechar también las opciones gratuitas.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿El curso queda grabado?<span class="plus"></span></button>
+        <div class="faq-a"><p>Sí. Todos los alumnos tendrán acceso a la grabación.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Podré hacer preguntas?<span class="plus"></span></button>
+        <div class="faq-a"><p>Sí. Además tendrás acceso al grupo privado de WhatsApp para seguimiento después del curso.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">¿Trabajaremos con ejemplos reales?<span class="plus"></span></button>
+        <div class="faq-a"><p>Sí. Todo el curso está diseñado con casos reales del trabajo contable y financiero en México.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="on-ink" id="inscripcion">
+  <div class="wrap">
+    <div class="section-head center" style="margin-left:auto;margin-right:auto;">
+      <div class="eyebrow">Tu inversión</div>
+      <h2>Inscríbete hoy y comienza a trabajar acompañado</h2>
+    </div>
+    <div class="factura">
+      <div class="factura-head">
+        <span class="fid">FOLIO · CURSO-IA-CONTADORES-2026</span>
+        <span class="badge">precio de lanzamiento</span>
+      </div>
+      <div class="factura-title"><h3>Curso en vivo — IA para Contadores</h3></div>
+      <div class="factura-items">
+        <div class="row"><span>4 horas de capacitación en vivo</span></div>
+        <div class="row"><span>Acceso a la grabación</span></div>
+        <div class="row"><span>Grupo privado de WhatsApp</span></div>
+        <div class="row"><span>Hoja de Prompts Maestros</span></div>
+        <div class="row"><span>Plantilla profesional para prompts</span></div>
+      </div>
+      <div class="factura-total">
+        <span class="lbl">Total</span>
+        <span class="amt">$797<sup>MXN</sup></span>
+      </div>
+      <div class="factura-cta">
+        <a href="#" class="btn btn-primary btn-block">Inscríbete hoy</a>
+        <p class="factura-note">Nos vemos el 31 de julio, 6:00 pm (Hora CDMX)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-signoff">Nos vemos el 31 de julio.</div>
+    <div class="foot-links">
+      <span>FiscaLab</span>
+      <span>fiscalab.mx</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o=>{
+        if(o!==item){ o.classList.remove('open'); o.querySelector('.faq-a').style.maxHeight=null; }
+      });
+      if(isOpen){
+        item.classList.remove('open'); a.style.maxHeight = null;
+      } else {
+        item.classList.add('open'); a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // Ledger hero chat sequence
+  const sequence = [
+    {type:'you', text:'"Analiza estos CFDI."'},
+    {type:'ai', text:'13 facturas clasificadas, IVA desglosado.'},
+    {type:'you', text:'"Elabora la póliza contable."'},
+    {type:'ai', text:'Asiento propuesto: cuenta, cargo, abono.'},
+    {type:'you', text:'"Redacta este correo para mi cliente."'},
+    {type:'ai', text:'Correo claro, listo para enviar.'},
+    {type:'you', text:'"Prepara un borrador para el SAT."'},
+    {type:'ai', text:'Escrito con fundamento legal incluido.'},
+  ];
+  const ledgerBody = document.getElementById('ledgerBody');
+  let idx = 0;
+  const MAX_VISIBLE = 6;
+
+  function pushMsg(item){
+    const div = document.createElement('div');
+    div.className = 'msg ' + (item.type === 'you' ? 'you' : 'ai');
+    div.innerHTML = item.type === 'ai' ? '<span class="check">✓</span>' + item.text : item.text;
+    ledgerBody.appendChild(div);
+    while(ledgerBody.children.length > MAX_VISIBLE){
+      ledgerBody.removeChild(ledgerBody.firstChild);
+    }
+    ledgerBody.scrollTop = ledgerBody.scrollHeight;
+  }
+
+  function tick(){
+    pushMsg(sequence[idx % sequence.length]);
+    idx++;
+    const next = sequence[idx % sequence.length];
+    const delay = next && next.type === 'ai' ? 900 : 1700;
+    setTimeout(tick, delay);
+  }
+  tick();
+</script>
+
+</body>
+</html>
